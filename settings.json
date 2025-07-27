@@ -1,0 +1,8 @@
+{
+  "theme": "modern",
+  "sound_enabled": true,
+  "show_fps": true,
+  "difficulty": "normal",
+  "auto_pause": false,
+  "show_controls": true
+}
