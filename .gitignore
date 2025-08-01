@@ -1,5 +1,6 @@
 code .gitignore
 .gitignore
+*.DS_Store
 *.json
 *.pyc
 __pycache__/
