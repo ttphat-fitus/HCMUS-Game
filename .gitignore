@@ -1,4 +1,5 @@
 code .gitignore
+.gitignore
 *.json
 *.pyc
 __pycache__/
@@ -10,3 +11,11 @@ __pycache__/
 *.bak
 *.swp
 *.tmp       
+*.DS_Store
+scenes/__pycache__/
+*pyc
+*.pyo
+assets/
+*.DS_Store
+.vscode/
+*.json
