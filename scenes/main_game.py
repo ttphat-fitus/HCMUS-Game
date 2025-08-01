@@ -4,6 +4,7 @@ import json
 import os
 from .dino import Dino
 from .obstacles import ObstacleManager
+from .tokens import TokenManager
 from .background import Background
 from .hud import HUD
 from .game_over import GameOver
@@ -34,10 +35,16 @@ class MainGame:
         
         # Game variables
         self.score = 0
+        self.token_score = 0  # Separate score for tokens collected
         self.high_score = self.load_high_score()
         self.speed = self.START_SPEED
+        self.base_speed = self.START_SPEED  # Store original speed for powerup calculations
         self.difficulty = 0
         self.camera_x = 0
+        
+        # Powerup effects
+        self.active_powerups = {}  # Dictionary to track active powerups
+        self.coin_multiplier = 1  # Multiplier for coin collection (doublegold effect)
         
         # Initialize game objects
         self.background = Background(screen_width, screen_height)
@@ -48,6 +55,7 @@ class MainGame:
         self.dino = Dino(self.DINO_START_POS[0], self.ground_y - self.ground_offset)
         # Set a ground offset so the dino stays lower
         self.obstacle_manager = ObstacleManager(screen_width, self.ground_y)
+        self.token_manager = TokenManager(screen_width, self.ground_y)
         self.hud = HUD(screen_width, screen_height)
         self.game_over_screen = GameOver(screen_width, screen_height)
         
@@ -77,10 +85,16 @@ class MainGame:
         """Reset the game for a new run"""
         # Reset variables
         self.score = 0
+        self.token_score = 0
         self.game_running = False
         self.difficulty = 0
         self.speed = self.START_SPEED
+        self.base_speed = self.START_SPEED
         self.camera_x = 0
+        
+        # Reset powerups
+        self.active_powerups.clear()
+        self.coin_multiplier = 1
         
         # Reset game objects
         self.dino.position.x = self.DINO_START_POS[0]
@@ -90,6 +104,7 @@ class MainGame:
         self.dino.state = "idle"
         
         self.obstacle_manager.clear()
+        self.token_manager.clear()
         self.hud.show_start_label_again()
         self.game_over_screen.hide()
         
@@ -111,10 +126,19 @@ class MainGame:
     def update(self, delta_time):
         """Update game logic"""
         if self.game_running:
-            # Update speed and difficulty (matching original logic)
-            self.speed = self.START_SPEED + self.score / self.SPEED_MODIFIER
-            if self.speed > self.MAX_SPEED:
-                self.speed = self.MAX_SPEED
+            # Update powerups first
+            self.update_powerups(delta_time)
+            
+            # Calculate base speed for scoring (always normal speed)
+            self.base_speed = self.START_SPEED + self.score / self.SPEED_MODIFIER
+            if self.base_speed > self.MAX_SPEED:
+                self.base_speed = self.MAX_SPEED
+                
+            # Movement speed (can be affected by halfspeed powerup)
+            if "halfspeed" in self.active_powerups:
+                self.speed = self.base_speed * 0.7 # Slower movement for obstacles/background
+            else:
+                self.speed = self.base_speed
                 
             self.difficulty = int(self.score / self.SPEED_MODIFIER)
             if self.difficulty > self.MAX_DIFFICULTY:
@@ -123,15 +147,31 @@ class MainGame:
             # Update camera position (following dino)
             self.camera_x = self.dino.position.x - 200
             
-            # Update score
-            self.score += self.speed * delta_time
+            # Update score (always use base_speed, not affected by halfspeed powerup)
+            self.score += self.base_speed * delta_time
             
             # Update game objects
             self.dino.update(delta_time, self.game_running, self.ground_y + self.ground_offset)
             self.background.update(delta_time, self.speed)
             self.obstacle_manager.update(delta_time, self.speed, self.score, self.difficulty, self.camera_x)
+            self.token_manager.update(delta_time, self.speed, self.score, self.difficulty, self.camera_x)
             
-            # Check collisions
+            # Check token collisions (collect tokens and powerups)
+            coin_value, powerup_effects = self.token_manager.check_collision(self.dino)
+            if coin_value > 0:
+                # Apply coin multiplier from doublegold powerup
+                actual_coins = coin_value * self.coin_multiplier
+                self.token_score += actual_coins
+                if self.coin_multiplier > 1:
+                    print(f"Doublegold active! Collected {coin_value} coin(s) -> {actual_coins} coins!")
+                # Play collection sound here if you have one
+                # pygame.mixer.Sound("assets/sound/collect.wav").play()
+            
+            # Handle powerup effects
+            for powerup in powerup_effects:
+                self.activate_powerup(powerup["effect"], powerup["duration"], powerup["type"])
+            
+            # Check obstacle collisions (game over)
             if self.obstacle_manager.check_collision(self.dino):
                 self.game_over()
         else:
@@ -149,6 +189,36 @@ class MainGame:
         if self.score > self.high_score:
             self.high_score = int(self.score)
             self.save_high_score()
+    
+    def update_powerups(self, delta_time):
+        """Update active powerup timers"""
+        expired_powerups = []
+        
+        for powerup_name, remaining_time in self.active_powerups.items():
+            remaining_time -= delta_time
+            if remaining_time <= 0:
+                expired_powerups.append(powerup_name)
+            else:
+                self.active_powerups[powerup_name] = remaining_time
+        
+        # Remove expired powerups and reset their effects
+        for powerup_name in expired_powerups:
+            del self.active_powerups[powerup_name]
+            if powerup_name == "doublegold":
+                self.coin_multiplier = 1
+                print("Doublegold powerup expired!")
+            elif powerup_name == "halfspeed":
+                print("Halfspeed powerup expired!")
+    
+    def activate_powerup(self, effect, duration, powerup_type):
+        """Activate a powerup effect"""
+        if effect == "halfspeed":
+            self.active_powerups["halfspeed"] = duration
+            print(f"Halfspeed activated for {duration} seconds! (Slower gameplay, same scoring)")
+        elif effect == "doublegold":
+            self.active_powerups["doublegold"] = duration
+            self.coin_multiplier = 2
+            print(f"Doublegold activated for {duration} seconds!")
             
     def draw(self):
         """Draw all game elements"""
@@ -157,10 +227,11 @@ class MainGame:
         # Draw game objects
         self.background.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
+        self.token_manager.draw(self.screen)
         self.dino.draw(self.screen)
         
         # Draw UI
-        self.hud.draw(self.screen, int(self.score), self.high_score, self.game_running)
+        self.hud.draw(self.screen, int(self.score), self.high_score, self.game_running, self.token_score, self.active_powerups)
         self.game_over_screen.draw(self.screen, int(self.score), self.high_score)
         
         pygame.display.flip()

@@ -1,0 +1,12 @@
+code .gitignore
+*.json
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.bak
+*.swp
+*.tmp       

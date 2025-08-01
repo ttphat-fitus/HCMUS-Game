@@ -39,7 +39,7 @@ class HUD:
         
         return text_surface.get_width(), text_surface.get_height()
         
-    def draw(self, screen, score, high_score, game_running):
+    def draw(self, screen, score, high_score, game_running, token_score=0, active_powerups=None):
         """Draw the HUD elements"""
         # Score
         score_text = f"SCORE: {score // 10}"  # Match original SCORE_MODIFIER
@@ -48,6 +48,27 @@ class HUD:
         # High Score
         high_score_text = f"HIGH SCORE: {high_score // 10}"
         self.draw_text_with_shadow(screen, high_score_text, self.font, 20, 50)
+        
+        # Coin Score
+        coin_text = f"COINS: {token_score}"
+        self.draw_text_with_shadow(screen, coin_text, self.font, 20, 80, (255, 215, 0))  # Gold color
+        
+        # Active Powerups
+        if active_powerups and len(active_powerups) > 0:
+            y_offset = 110
+            for powerup_name, remaining_time in active_powerups.items():
+                if powerup_name == "halfspeed":
+                    powerup_text = f"SLOW POWERUP: {remaining_time:.1f}s"
+                    color = (0, 150, 255)  # Blue
+                elif powerup_name == "doublegold":
+                    powerup_text = f"DOUBLE GOLD: {remaining_time:.1f}s"
+                    color = (255, 165, 0)  # Orange
+                else:
+                    powerup_text = f"{powerup_name.upper()}: {remaining_time:.1f}s"
+                    color = (255, 255, 255)  # White
+                
+                self.draw_text_with_shadow(screen, powerup_text, self.font, 20, y_offset, color)
+                y_offset += 30
         
         # Start label
         if self.show_start_label and not game_running:
