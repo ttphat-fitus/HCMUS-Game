@@ -6,7 +6,7 @@ from .game_object import GameObject
 class Token(GameObject):
     """Collectible token class"""
     
-    def __init__(self, x, y, token_type="coin", scale=0.1):  # Much smaller scale for large sprites
+    def __init__(self, x, y, token_type="coin", scale=1):  # Much smaller scale for large sprites
         super().__init__(x, y)
         self.token_type = token_type
         
@@ -154,7 +154,7 @@ class TokenManager:
         
         # Token spawn probabilities
         self.coin_probability = 1.0  # Coins always spawn when timer triggers
-        self.doublegold_probability = 0.5 # chance for doublegold
+        self.doublegold_probability = 0.7 # chance for doublegold
         self.halfspeed_min_score = 500  # Minimum score needed for halfspeed powerup
         
     def update(self, delta_time, speed, score, difficulty, camera_x):

@@ -12,7 +12,7 @@ from .game_over import GameOver
 class MainGame:
     """Main game class managing the entire game state"""
     
-    # Constants from original Godot code
+    # Constants for game settings
     DINO_START_POS = (150, 485)
     START_SPEED = 200.0  # Higher starting speed
     MAX_SPEED = 1000.0  # Much higher max speed
@@ -27,7 +27,7 @@ class MainGame:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.screen = pygame.display.set_mode((screen_width, screen_height))
-        pygame.display.set_caption("Dino Run - Python Version")
+        pygame.display.set_caption("Dino Run")
         
         self.clock = pygame.time.Clock()
         self.running = True
