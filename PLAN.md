@@ -86,14 +86,18 @@ GameObject (Abstract Base)
 #### Phase 4: UI and Polish
 - [x] Create HUD with score display
 - [x] Implement GameOver screen with restart
-- [x] Add sound effects and music
-- [ ] Fine-tune game balance and physics
+- [x] Add jump sound effect (basic audio)
+- [x] Integrate powerup timers (HUD active powerups panel)
+- [x] Separate gameplay speed vs scoring logic (for slowdown fairness)
+- [ ] Fine-tune physics feel (jump arc & acceleration constants) *(pending tuning pass)*
 
 #### Phase 5: Advanced Features
-- [ ] Implement save/load high scores
-- [ ] Add particle effects for enhanced visuals
-- [ ] Optimize performance and add error handling
-- [ ] Create comprehensive documentation
+- [x] Implement save/load high scores (`high_score.json`)
+- [x] Introduce powerups: `halfspeed`, `doublegold`
+- [ ] Additional powerups (invincibility, etc.)
+- [ ] Particle / visual effects (dust, impact) 
+- [ ] Performance profiling & micro-optimizations
+- [ ] Expanded documentation (design pattern deep dive) *(partial)*
 
 ### 5. File Structure
 ```
@@ -147,14 +151,14 @@ Game-Python/
     └── fonts/
 ```
 
-### 6. Design Pattern Analysis Table
+### 6. Design Pattern Analysis Table (Planned vs Current)
 
 | Index | Design Pattern | Why would we use or not use it | How it could / could not help with the project | Final decision |
 |-------|----------------|------------------------------|-----------------------------------------------|----------------|
 | 1 | **Factory Pattern** | Create different obstacle types without specifying exact classes | Helps manage obstacle creation complexity, easy to add new obstacle types | **USE** |
 | 2 | **Observer Pattern** | Decouple game events from specific handlers | Allows UI, sound, score to react to game events independently | **USE** |
 | 3 | **State Pattern** | Manage different game states (menu, playing, game over) | Clean state transitions, easier to add new states | **USE** |
-| 4 | **Singleton Pattern** | Ensure single instance of managers (Asset, Audio, Game) | Global access to managers, resource management | **USE** (sparingly) |
+| 4 | **Singleton Pattern** | Ensure single instance of managers (Asset, Audio, Game) | Global access to managers, resource management | **USE** (sparingly) *(GameManager responsibilities partially centralized in `MainGame` class)* |
 | 5 | **Strategy Pattern** | Different difficulty algorithms | Easy to modify difficulty progression, A/B testing | **USE** |
 | 6 | **Command Pattern** | Encapsulate input actions | Undo/redo potential, input remapping, replay system | **MAYBE** (if time permits) |
 | 7 | **Builder Pattern** | Complex object construction | Not much complexity in simple game objects | **NOT USE** |
@@ -167,21 +171,23 @@ Game-Python/
 - **Asset preloading**: Prevent runtime loading delays
 - **Memory management**: Proper cleanup of off-screen objects
 
-### 8. Documentation Files to Create
-- [x] `README.md`: Setup instructions, controls, how to play
-- [x] `DESIGN_PATTERNS.md`: Detailed explanation of implemented patterns
-- [x] `OOP_ANALYSIS.md`: Analysis of OOP principles usage
-- [x] `UNAPPLICABLE.md`: Design patterns/concepts that couldn't be used
-- [ ] `API_DOCUMENTATION.md`: Code documentation for classes and methods
+### 8. Documentation Files to Create / Status
+- [x] `README.md`: Setup instructions, controls, current vs planned scope
+- [x] `AI_LOG.md`: Conversation & implementation log (continually updated)
+- [ ] `DESIGN_PATTERNS.md`: Elaborated rationale *(pending extraction from notes)*
+- [ ] `UNAPPLICABLE.md`: Patterns intentionally omitted *(to add if project scope grows)*
+- [ ] `OOP_ANALYSIS.md`: Mapping classes to OOP principles *(draft not yet in repo)*
 
-## Success Criteria
-- [x] Game runs with identical mechanics to original Godot version
-- [x] Minimum 3 design patterns properly implemented (5 implemented)
-- [x] All 4 OOP principles clearly demonstrated
-- [x] Clean, maintainable, and extensible code structure
-- [x] Comprehensive documentation and setup instructions
-- [ ] Performance equivalent to or better than original (needs testing)
+## Success Criteria (Live Tracking)
+- [x] Core endless runner loop functional
+- [x] Progressive difficulty & speed increase
+- [x] Powerup system (2 implemented) without breaking scoring fairness
+- [x] Persistent high score
+- [ ] Minimum 3 design patterns explicitly implemented *(current code uses OOP; explicit pattern modules pending)*
+- [ ] All 4 OOP principles documented with examples
+- [x] Clean modular scene-based structure
+- [~] Documentation: README + logs done; deeper design docs pending
+- [ ] Performance parity profiling (FPS / CPU usage) pending test harness
 
 ---
 
-**AWAITING USER APPROVAL TO PROCEED WITH IMPLEMENTATION**
