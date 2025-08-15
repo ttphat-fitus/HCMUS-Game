@@ -1,6 +1,6 @@
-# Dino Run Game - Python Version
+# Dino Run – Python Version
 
-A Python remake of the classic dinosaur running game using Pygame.
+Endless side‑scrolling runner developed in Python with Pygame. This is a faithful educational rewrite (Godot → Python) featuring clean OOP structure, difficulty scaling, collectibles, and a lightweight powerup system.
 
 ## Setup Instructions
 
@@ -41,43 +41,36 @@ python main.py
 - **S**: Open Shop (when not playing)
 - **ESC**: Quit Game / Close Shop
 
-## Game Features
+## Current Features
 
-- Infinite running gameplay with proper sprite sheet animations
-- Progressive difficulty system matching the original
-- Multiple obstacle types with proper scaling:
-  - **Ground obstacles**: Stumps, rocks, barrels (2.0-2.5x scale)
-  - **Flying obstacles**: Animated birds with wing-flapping (2.0x scale)
-- **Dino character**: Full sprite sheet animation (2.5x scale)
-  - Idle animation (static)
-  - Running animation (4-frame cycle)
-  - Jumping animation (static)
-  - Ducking animation (2-frame cycle)
-- **New Reward System**:
-  - Collectible coins that appear during gameplay
-  - Power-up items with special effects:
-    - **x2 Coin Multiplier**: Doubles coin collection for 15 seconds
-    - **Speed Reduction Potion**: Slows game speed for 10 seconds
-    - **Invincibility**: Makes player immune to obstacles for 8 seconds
-- **Shop System**:
-  - Purchase dinosaur skins with collected coins
-  - Buy character accessories (hats, sunglasses, capes, etc.)
-  - Unlock new maps with different themes:
-    - Desert (default)
-    - Forest
-    - Arctic
-    - Volcano
-    - Space
-- **Enhanced Backgrounds**: Multiple themed maps with parallax scrolling
-- Sound effects with jump sound
-- Game over screen with restart functionality
-- Persistent high score tracking
-- **Player Progress**: Coins and purchases saved between sessions
+- Endless procedural run with progressive difficulty (speed increases over time)
+- Obstacle variety: stump, rock, barrel (ground) and bird (flying)
+- Parallax multi‑layer background + scrolling ground
+- Player (Dino) physics: jump + (future: duck placeholder if sprite set)
+- Scoring & persistent high score (`high_score.json`)
+- Token (coin) collection system separated from distance score
+- Powerups with timers & HUD indicators:
+  - `doublegold` – coin (token) value x2
+  - `halfspeed` – slows gameplay movement speed (obstacles/background) while score rate remains unchanged
+- Distinct separation of gameplay movement speed vs scoring speed (ensures fair scoring during slow effect)
+- HUD: score, high score, coin total, active powerups w/ remaining seconds
+- Game Over screen with restart control
+- Basic audio (jump sound)
 
-## Project Structure
+## Planned / In Progress (Not yet implemented in repository)
+
+These appear in older design notes but are not present in the current codebase. Tracked here for clarity:
+
+- Expanded powerups (invincibility, more modifiers)
+- Shop system (skins, accessories, map themes)
+- Themed background variants (forest, arctic, volcano, space)
+- Particle / visual effects & sprite sheet animation refinements
+- Settings & input remapping
+
+## Project Structure (Current)
 
 ```text
-Game-Python2/
+HCMUS-Game/
 ├── main.py              # Main game entry point
 ├── requirements.txt     # Python dependencies
 ├── assets/              # Game assets
@@ -92,39 +85,34 @@ Game-Python2/
     ├── dino.py          # Player character
     ├── obstacles.py     # Obstacle classes
     ├── background.py    # Background manager
-    ├── enhanced_background.py  # Multi-theme backgrounds
-    ├── rewards.py       # Coin and power-up system
-    ├── shop.py          # Shop and player progress
-    ├── hud.py          # UI elements
-    └── game_over.py    # Game over screen
+  ├── hud.py           # UI / HUD overlay
+  ├── game_over.py     # Game over screen
+  ├── obstacles.py     # Obstacle & manager classes
+  ├── tokens.py        # (If present) token & powerup spawning logic
+  └── background.py    # Parallax background handling
 ```
 
-## New Features Overview
+## Powerup System
 
-### 🪙 Rewards System
-- **Coins**: Collect golden coins during gameplay to earn currency
-- **Power-ups**: Special items with temporary effects:
-  - 💰 **x2 Coin Multiplier**: Double coin rewards for 15 seconds
-  - 🧪 **Speed Reduction**: Slow down the game for easier navigation
-  - 🛡️ **Invincibility**: Phase through obstacles safely
+| Powerup | Effect | Notes |
+|---------|--------|-------|
+| halfspeed | Temporarily reduces movement speed to 70% while score accrual remains tied to unmodified base speed | Creates recovery window without penalizing progress |
+| doublegold | Doubles coin value for the active duration | Applies only to token collection, not distance score |
 
-### 🛒 Shop System
-- **Skins**: Customize your dinosaur's appearance
-  - Classic, Fire, Ice, Golden, Shadow themes
-- **Accessories**: Add personality with hats, sunglasses, capes, crowns, and wings
-- **Maps**: Purchase new environments to change the game's scenery
+Stacking: Currently each powerup refreshes its own timer when re‑collected; simultaneous effects are supported.
 
-### 🗺️ Map Themes
-- **Desert**: Classic sandy environment with cacti and dunes
-- **Forest**: Lush green landscape with trees and mountains
-- **Arctic**: Icy terrain with snow-covered formations
-- **Volcano**: Dangerous volcanic environment with lava flows
-- **Space**: Cosmic adventure with stars, planets, and space platforms
+HUD: Active powerups are listed with remaining whole‑second countdown.
 
-### 💾 Persistent Progress
-- Coins and purchases are saved between game sessions
-- High scores and player preferences are maintained
-- Shop purchases unlock content permanently
+Implementation detail: `base_speed` (used for score progression & difficulty) is calculated independent of the slowdown so halfspeed does not reduce scoring rate.
+
+## Development Notes Snapshot
+
+Key architectural decision: decouple scoring (`base_speed`) from movement (`speed`) so time‑based / distance score progression remains fair when slowdown effects are active.
+
+Difficulty is proportional to cumulative score; capped by `MAX_DIFFICULTY` to limit spawn escalation.
+
+High score persistence stored in JSON for portability.
 
 ## Credits
-Ported from the original Godot version to Python using Pygame.
+
+Original concept (Godot version) adapted to Python / Pygame for instructional OOP & design pattern practice.

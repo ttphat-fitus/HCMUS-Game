@@ -19,4 +19,4 @@ scenes/__pycache__/
 assets/
 *.DS_Store
 .vscode/
-*.json
+*.jsonSlide.md

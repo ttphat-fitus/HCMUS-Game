@@ -106,26 +106,30 @@ Game-Python2/
 
 ### Implementation Features
 
-✅ **Completed Features**:
-- Infinite running gameplay
-- Jump and duck mechanics
-- Progressive difficulty
-- Multiple obstacle types
-- Parallax scrolling background
-- Score tracking with persistent high score
-- Game over screen with restart
-- Sound effects
-- Cross-platform compatibility
-- Automated setup scripts
+✅ **Completed Features (Current Repository)**:
 
-🔄 **Potential Enhancements**:
-- Sprite sheet animations for character
-- More sound effects
-- Visual effects (particles)
-- Additional obstacle types
-- Power-ups
-- Achievements system
-- Different environments/themes
+- Endless running gameplay & progressive difficulty
+- Obstacle set: stump, rock, barrel, bird
+- Token (coin) spawning & collection tracking (separate `token_score`)
+- Powerups (timed): `halfspeed`, `doublegold`
+   - Movement slowdown decoupled from score progression via `base_speed` vs `speed`
+- Parallax scrolling background (multi-layer)
+- Jump mechanic (duck placeholder pending art)
+- Persistent high score (`high_score.json`)
+- HUD: score, high score, coins, active powerups with countdown
+- Game over screen & restart flow
+- Basic audio (jump sound)
+
+🔄 **Planned / Potential Enhancements**:
+
+- Additional powerups (invincibility, shield, score multiplier)
+- Duck state sprite & hitbox adjustments
+- Particle / dust effects on land & collision
+- Expanded obstacle library + pattern groups
+- Animated sprite sheets (current dino placeholder single frame sequences)
+- Biome / themed backgrounds (forest, arctic, volcano, space)
+- Shop system (skins, cosmetics, map themes)
+- Achievements & session analytics
 
 ### Performance Considerations
 
