@@ -44,17 +44,9 @@ class Bird(Obstacle):
         # Load bird sprite sheet (288x32 = 9 frames of 32x32) with original 4x scale
         try:
             self.load_sprite_sheet("assets/img/obstacles/Bird.png", 32, 32, 9, 3.0)
-            if not self.sprite_sheet:
-                print("WARNING: Bird sprite sheet failed to load!")
-            if not self.sprite:
-                print("WARNING: Bird sprite (first frame) failed to load!")
             self.animation_speed = 10.0  # Match original Godot speed
             self.speed_multiplier = 3.0  # Set speed multiplier here
             print(f"Bird created at position ({x}, {y})")
-            if self.rect:
-                print(f"Bird rect: {self.rect}")
-            else:
-                print("WARNING: Bird has no rect after initialization!")
         except Exception as e:
             print(f"ERROR initializing bird: {e}")
         
@@ -68,14 +60,6 @@ class Bird(Obstacle):
         
         # Update position using the base class update
         super().update(delta_time, speed)  # Need to pass speed to base class
-        
-        # Debug checks
-        if not self.sprite:
-            print("WARNING: Bird has no sprite during update")
-        if not self.rect:
-            print(f"WARNING: Bird has no rect during update at position {self.position}")
-        elif self.rect.x < -1000 or self.rect.x > 10000:  # Sanity check for position
-            print(f"WARNING: Bird at unusual position: {self.position}, rect: {self.rect}")
 
 class ObstacleFactory:
     """Factory for creating obstacles"""

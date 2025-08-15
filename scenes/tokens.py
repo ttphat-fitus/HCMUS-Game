@@ -48,12 +48,7 @@ class Token(GameObject):
         try:
             self.load_sprite(sprite_path, scale)
             print(f"{token_type.capitalize()} loaded successfully at position ({self.position.x}, {self.position.y}), scale: {scale}")
-            if self.rect:
-                print(f"{token_type.capitalize()} rect: {self.rect}")
-            else:
-                print(f"WARNING: {token_type.capitalize()} has no rect after loading!")
         except Exception as e:
-            print(f"Warning: Could not load {token_type} sprite {sprite_path}: {e}")
             # Create a simple colored rectangle as fallback
             self.create_fallback_sprite(scale)
             
@@ -274,16 +269,6 @@ class TokenManager:
                 active_items += 1
                 if token.sprite and token.rect:
                     token.draw(screen)
-                else:
-                    print(f"WARNING: {token.token_type} at {token.position} has no sprite or rect!")
-        
-        # Debug info (only print occasionally to avoid spam)
-        if active_items > 0 and hasattr(self, '_debug_counter'):
-            self._debug_counter = getattr(self, '_debug_counter', 0) + 1
-            if self._debug_counter % 120 == 0:  # Print every 2 seconds at 60 FPS
-                coin_count = sum(1 for t in self.tokens if t.token_type == "coin" and not t.collected)
-                powerup_count = sum(1 for t in self.tokens if t.token_type != "coin" and not t.collected)
-                print(f"Drawing {coin_count} coins and {powerup_count} powerups")
                 
     def clear(self):
         """Clear all tokens (for game restart)"""

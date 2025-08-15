@@ -2,6 +2,7 @@ import pygame
 import sys
 import json
 import os
+import random
 from .dino import Dino
 from .obstacles import ObstacleManager
 from .tokens import TokenManager
@@ -59,6 +60,11 @@ class MainGame:
         self.hud = HUD(screen_width, screen_height)
         self.game_over_screen = GameOver(screen_width, screen_height)
         
+        # Load sounds
+        self.bg_music = None
+        self.game_over_sounds = []
+        self.load_sounds()
+        
         # Initialize new game
         self.new_game()
         
@@ -80,6 +86,59 @@ class MainGame:
                 json.dump({"high_score": self.high_score}, f)
         except Exception as e:
             print(f"Error saving high score: {e}")
+    
+    def load_sounds(self):
+        """Load game sounds"""
+        try:
+            # Load background music
+            self.bg_music = "assets/sound/bg.mp3"
+            
+            # Load game over sounds
+            game_over_files = ["assets/sound/haha1.mp3", "assets/sound/haha2.mp3", "assets/sound/haha3.mp3"]
+            for sound_file in game_over_files:
+                try:
+                    sound = pygame.mixer.Sound(sound_file)
+                    self.game_over_sounds.append(sound)
+                except pygame.error as e:
+                    print(f"Warning: Could not load {sound_file}: {e}")
+            
+            print(f"Loaded {len(self.game_over_sounds)} game over sounds")
+            
+        except Exception as e:
+            print(f"Error loading sounds: {e}")
+    
+    def play_background_music(self):
+        """Start playing background music in loop"""
+        try:
+            if self.bg_music:
+                pygame.mixer.music.load(self.bg_music)
+                pygame.mixer.music.set_volume(0.3)  # Set volume to 30%
+                pygame.mixer.music.play(-1)  # -1 means loop indefinitely
+                print("Background music started")
+        except pygame.error as e:
+            print(f"Error playing background music: {e}")
+    
+    def stop_background_music(self):
+        """Stop background music"""
+        pygame.mixer.music.stop()
+    
+    def play_game_over_sound(self):
+        """Play a random game over sound in loop"""
+        try:
+            if self.game_over_sounds:
+                # Stop any currently playing game over sound
+                pygame.mixer.stop()
+                # Choose a random game over sound
+                sound = random.choice(self.game_over_sounds)
+                sound.set_volume(0.5)  # Set volume to 50%
+                sound.play(-1)  # -1 means loop indefinitely
+                print("Game over sound started")
+        except Exception as e:
+            print(f"Error playing game over sound: {e}")
+    
+    def stop_game_over_sound(self):
+        """Stop game over sound"""
+        pygame.mixer.stop()
             
     def new_game(self):
         """Reset the game for a new run"""
@@ -107,6 +166,10 @@ class MainGame:
         self.token_manager.clear()
         self.hud.show_start_label_again()
         self.game_over_screen.hide()
+        
+        # Stop any game over sounds and start background music
+        self.stop_game_over_sound()
+        self.play_background_music()
         
     def handle_events(self):
         """Handle pygame events"""
@@ -151,7 +214,7 @@ class MainGame:
             self.score += self.base_speed * delta_time
             
             # Update game objects
-            self.dino.update(delta_time, self.game_running, self.ground_y + self.ground_offset)
+            self.dino.update(delta_time, self.game_running, self.ground_y + self.ground_offset, self.active_powerups, self.score)
             self.background.update(delta_time, self.speed)
             self.obstacle_manager.update(delta_time, self.speed, self.score, self.difficulty, self.camera_x)
             self.token_manager.update(delta_time, self.speed, self.score, self.difficulty, self.camera_x)
@@ -176,13 +239,17 @@ class MainGame:
                 self.game_over()
         else:
             # Update dino in idle state
-            self.dino.update(delta_time, self.game_running, self.ground_y + self.ground_offset)
+            self.dino.update(delta_time, self.game_running, self.ground_y + self.ground_offset, self.active_powerups, self.score)
             
     def game_over(self):
         """Handle game over"""
         self.check_high_score()
         self.game_running = False
         self.game_over_screen.show()
+        
+        # Stop background music and play game over sound
+        self.stop_background_music()
+        self.play_game_over_sound()
         
     def check_high_score(self):
         """Check and update high score"""
@@ -245,5 +312,8 @@ class MainGame:
             self.update(delta_time)
             self.draw()
             
+        # Stop all sounds before quitting
+        self.stop_background_music()
+        self.stop_game_over_sound()
         pygame.quit()
         sys.exit()

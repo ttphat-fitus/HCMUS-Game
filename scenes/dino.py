@@ -12,8 +12,16 @@ class Dino(GameObject):
     def __init__(self, x, y):
         super().__init__(x, y)
         
+        # Sprite sheet management
+        self.current_sprite_sheet = "base"
+        self.sprite_sheets = {
+            "base": "assets/img/mort-base.png",
+            "slow": "assets/img/mort-slow.png", 
+            "fast": "assets/img/mort-fast.png"
+        }
+        
         # Load sprite sheet (576x24 = 24 frames of 24x24) with original 8x scale
-        self.load_sprite_sheet("assets/img/mort.png", 24, 24, 24, 8.0)  # Original scale
+        self.load_sprite_sheet("assets/img/mort-base.png", 24, 24, 24, 8.0)  # Original scale
         
         # Animation states and frame ranges (matching original Godot mapping)
         self.state = "idle"  # idle, run, jump, duck
@@ -50,9 +58,28 @@ class Dino(GameObject):
             self.run_rect = pygame.Rect(0, 0, 80, 128)
             # Original: DuckCol shape = 10x14 at scale 8 = 80x112  
             self.duck_rect = pygame.Rect(0, 0, 80, 112)
+    
+    def change_sprite_sheet(self, sheet_type):
+        """Change the sprite sheet based on type (base, slow, fast)"""
+        if sheet_type in self.sprite_sheets and sheet_type != self.current_sprite_sheet:
+            self.current_sprite_sheet = sheet_type
+            # Reload sprite sheet with the new image
+            self.load_sprite_sheet(self.sprite_sheets[sheet_type], 24, 24, 24, 8.0)
+            # Reset animation to avoid flickering
+            self.state_frame_index = 0
+            self.animation_timer = 0.0
+            print(f"Dino sprite changed to: {sheet_type}")
         
-    def update(self, delta_time, game_running, ground_y):
+    def update(self, delta_time, game_running, ground_y, active_powerups=None, score=0):
         """Update dinosaur physics and animation"""
+        # Check sprite sheet conditions
+        if active_powerups and "halfspeed" in active_powerups:
+            self.change_sprite_sheet("slow")
+        elif score > 4000:
+            self.change_sprite_sheet("fast")
+        else:
+            self.change_sprite_sheet("base")
+            
         # Apply gravity
         self.velocity.y += self.GRAVITY * delta_time
         
