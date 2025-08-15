@@ -2,6 +2,7 @@ import pygame
 import random
 import math
 from .game_object import GameObject
+from .path_utils import get_resource_path
 
 class Token(GameObject):
     """Collectible token class"""
@@ -38,9 +39,9 @@ class Token(GameObject):
     def load_token_sprite(self, token_type, scale):
         """Load the appropriate sprite for the token type"""
         sprite_paths = {
-            "coin": "assets/img/rewards/coin.png",
-            "halfspeed": "assets/img/rewards/halfspeed.png",
-            "doublegold": "assets/img/rewards/doublegold.png"
+            "coin": get_resource_path("assets/img/rewards/coin.png"),
+            "halfspeed": get_resource_path("assets/img/rewards/halfspeed.png"),
+            "doublegold": get_resource_path("assets/img/rewards/doublegold.png")
         }
         
         sprite_path = sprite_paths.get(token_type, sprite_paths["coin"])

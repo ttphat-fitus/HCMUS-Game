@@ -1,4 +1,5 @@
 import pygame
+from .path_utils import get_resource_path
 
 class GameOver:
     """Game over screen"""
@@ -12,8 +13,8 @@ class GameOver:
         self.font = None
         self.large_font = None
         try:
-            self.font = pygame.font.Font("assets/fonts/retro.ttf", 24)
-            self.large_font = pygame.font.Font("assets/fonts/retro.ttf", 64)
+            self.font = pygame.font.Font(get_resource_path("assets/fonts/retro.ttf"), 24)
+            self.large_font = pygame.font.Font(get_resource_path("assets/fonts/retro.ttf"), 64)
         except (pygame.error, FileNotFoundError):
             self.font = pygame.font.Font(None, 24)
             self.large_font = pygame.font.Font(None, 64)

@@ -1,4 +1,5 @@
 import pygame
+from .path_utils import get_resource_path
 
 class Background:
     """Manages the parallax scrolling background"""
@@ -14,7 +15,7 @@ class Background:
         # Load parallax layers
         for i in range(1, 6):
             try:
-                layer_image = pygame.image.load(f"assets/img/background/plx-{i}.png").convert_alpha()
+                layer_image = pygame.image.load(get_resource_path(f"assets/img/background/plx-{i}.png")).convert_alpha()
                 # Scale to screen height
                 scale_factor = screen_height / layer_image.get_height()
                 width = int(layer_image.get_width() * scale_factor)
@@ -30,7 +31,7 @@ class Background:
         # Ground
         self.ground_image = None
         try:
-            self.ground_image = pygame.image.load("assets/img/background/ground.png").convert_alpha()
+            self.ground_image = pygame.image.load(get_resource_path("assets/img/background/ground.png")).convert_alpha()
         except pygame.error:
             # Create fallback ground
             self.ground_image = pygame.Surface((screen_width, 100))

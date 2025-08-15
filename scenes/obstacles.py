@@ -1,6 +1,7 @@
 import pygame
 import random
 from .game_object import GameObject
+from .path_utils import get_resource_path
 
 class Obstacle(GameObject):
     """Base obstacle class"""
@@ -20,19 +21,19 @@ class Stump(Obstacle):
     """Tree stump obstacle"""
     
     def __init__(self, x, y):
-        super().__init__(x, y, "assets/img/obstacles/stump.png", 3.0)  # Original 4x scale
+        super().__init__(x, y, get_resource_path("assets/img/obstacles/stump.png"), 3.0)  # Original 4x scale
 
 class Rock(Obstacle):
     """Rock obstacle"""
     
     def __init__(self, x, y):
-        super().__init__(x, y, "assets/img/obstacles/rock.png", 3.0)  # Original 4x scale
+        super().__init__(x, y, get_resource_path("assets/img/obstacles/rock.png"), 3.0)  # Original 4x scale
 
 class Barrel(Obstacle):
     """Barrel obstacle"""
     
     def __init__(self, x, y):
-        super().__init__(x, y, "assets/img/obstacles/barrel.png", 3.0)  # Original 4x scale
+        super().__init__(x, y, get_resource_path("assets/img/obstacles/barrel.png"), 3.0)  # Original 4x scale
 
 class Bird(Obstacle):
     """Flying bird obstacle"""
@@ -43,7 +44,7 @@ class Bird(Obstacle):
         
         # Load bird sprite sheet (288x32 = 9 frames of 32x32) with original 4x scale
         try:
-            self.load_sprite_sheet("assets/img/obstacles/Bird.png", 32, 32, 9, 3.0)
+            self.load_sprite_sheet(get_resource_path("assets/img/obstacles/Bird.png"), 32, 32, 9, 3.0)
             self.animation_speed = 10.0  # Match original Godot speed
             self.speed_multiplier = 3.0  # Set speed multiplier here
             print(f"Bird created at position ({x}, {y})")

@@ -9,6 +9,7 @@ from .tokens import TokenManager
 from .background import Background
 from .hud import HUD
 from .game_over import GameOver
+from .path_utils import get_resource_path, get_save_path
 
 class MainGame:
     """Main game class managing the entire game state"""
@@ -71,8 +72,9 @@ class MainGame:
     def load_high_score(self):
         """Load high score from file"""
         try:
-            if os.path.exists("high_score.json"):
-                with open("high_score.json", "r") as f:
+            score_file = get_save_path("high_score.json")
+            if os.path.exists(score_file):
+                with open(score_file, "r") as f:
                     data = json.load(f)
                     return data.get("high_score", 0)
         except (json.JSONDecodeError, FileNotFoundError):
@@ -82,7 +84,8 @@ class MainGame:
     def save_high_score(self):
         """Save high score to file"""
         try:
-            with open("high_score.json", "w") as f:
+            score_file = get_save_path("high_score.json")
+            with open(score_file, "w") as f:
                 json.dump({"high_score": self.high_score}, f)
         except Exception as e:
             print(f"Error saving high score: {e}")
@@ -91,10 +94,14 @@ class MainGame:
         """Load game sounds"""
         try:
             # Load background music
-            self.bg_music = "assets/sound/bg.mp3"
+            self.bg_music = get_resource_path("assets/sound/bg.mp3")
             
             # Load game over sounds
-            game_over_files = ["assets/sound/haha1.mp3", "assets/sound/haha2.mp3", "assets/sound/haha3.mp3"]
+            game_over_files = [
+                get_resource_path("assets/sound/haha1.mp3"), 
+                get_resource_path("assets/sound/haha2.mp3"), 
+                get_resource_path("assets/sound/haha3.mp3")
+            ]
             for sound_file in game_over_files:
                 try:
                     sound = pygame.mixer.Sound(sound_file)

@@ -1,6 +1,7 @@
 import pygame
 import random
 from .game_object import GameObject
+from .path_utils import get_resource_path
 
 class Dino(GameObject):
     """Player character - the dinosaur"""
@@ -15,13 +16,13 @@ class Dino(GameObject):
         # Sprite sheet management
         self.current_sprite_sheet = "base"
         self.sprite_sheets = {
-            "base": "assets/img/mort-base.png",
-            "slow": "assets/img/mort-slow.png", 
-            "fast": "assets/img/mort-fast.png"
+            "base": get_resource_path("assets/img/mort-base.png"),
+            "slow": get_resource_path("assets/img/mort-slow.png"), 
+            "fast": get_resource_path("assets/img/mort-fast.png")
         }
         
         # Load sprite sheet (576x24 = 24 frames of 24x24) with original 8x scale
-        self.load_sprite_sheet("assets/img/mort-base.png", 24, 24, 24, 8.0)  # Original scale
+        self.load_sprite_sheet(get_resource_path("assets/img/mort-base.png"), 24, 24, 24, 8.0)  # Original scale
         
         # Animation states and frame ranges (matching original Godot mapping)
         self.state = "idle"  # idle, run, jump, duck
@@ -47,7 +48,7 @@ class Dino(GameObject):
         # Jump sound
         self.jump_sound = None
         try:
-            self.jump_sound = pygame.mixer.Sound("assets/sound/jump.wav")
+            self.jump_sound = pygame.mixer.Sound(get_resource_path("assets/sound/jump.wav"))
             self.jump_sound.set_volume(0.5)
         except pygame.error:
             pass
