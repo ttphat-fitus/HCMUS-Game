@@ -16,7 +16,6 @@ __pycache__/
 scenes/__pycache__/
 *pyc
 *.pyo
-assets/
 *.DS_Store
 .vscode/
 *.jsonSlide.md

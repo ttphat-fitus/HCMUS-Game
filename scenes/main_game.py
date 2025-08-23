@@ -94,13 +94,11 @@ class MainGame:
         """Load game sounds"""
         try:
             # Load background music
-            self.bg_music = get_resource_path("assets/sound/bg.mp3")
+            self.bg_music = get_resource_path("assets/sound/background.wav")
             
             # Load game over sounds
             game_over_files = [
-                get_resource_path("assets/sound/haha1.mp3"), 
-                get_resource_path("assets/sound/haha2.mp3"), 
-                get_resource_path("assets/sound/haha3.mp3")
+                get_resource_path("assets/sound/endgame.wav")
             ]
             for sound_file in game_over_files:
                 try:
@@ -119,7 +117,7 @@ class MainGame:
         try:
             if self.bg_music:
                 pygame.mixer.music.load(self.bg_music)
-                pygame.mixer.music.set_volume(0.3)  # Set volume to 30%
+                pygame.mixer.music.set_volume(0.05)  # Set volume
                 pygame.mixer.music.play(-1)  # -1 means loop indefinitely
                 print("Background music started")
         except pygame.error as e:

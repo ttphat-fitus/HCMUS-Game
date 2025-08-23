@@ -16,13 +16,13 @@ class Dino(GameObject):
         # Sprite sheet management
         self.current_sprite_sheet = "base"
         self.sprite_sheets = {
-            "base": get_resource_path("assets/img/mort-base.png"),
-            "slow": get_resource_path("assets/img/mort-slow.png"), 
-            "fast": get_resource_path("assets/img/mort-fast.png")
+            "base": get_resource_path("assets/img/dino/mort-base.png"),
+            "slow": get_resource_path("assets/img/dino/mort-slow.png"), 
+            "fast": get_resource_path("assets/img/dino/mort-fast.png")
         }
         
         # Load sprite sheet (576x24 = 24 frames of 24x24) with original 8x scale
-        self.load_sprite_sheet(get_resource_path("assets/img/mort-base.png"), 24, 24, 24, 8.0)  # Original scale
+        self.load_sprite_sheet(get_resource_path("assets/img/dino/mort-base.png"), 24, 24, 24, 8.0)  # Original scale
         
         # Animation states and frame ranges (matching original Godot mapping)
         self.state = "idle"  # idle, run, jump, duck
