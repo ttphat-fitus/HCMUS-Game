@@ -54,9 +54,9 @@ python3 -m venv venv && source venv/bin/activate && pip install pygame && python
 - **Scoring**: Distance-based scoring with persistent high scores
 
 ### Powerup System (3 Active Powerups)
-- **🐌 HalfSpeed**: Reduces game speed by 50% for 5 seconds (blue dino sprite)
+- **🐌 HalfSpeed**: Reduces game speed by 50% for 5 seconds (purple dino sprite)
 - **💰 DoubleGold**: Doubles coin value for 10 seconds (golden dino sprite)
-- **⚡ God Mode**: 8-second invincibility through obstacles (silver dino sprite)
+- **⚡ God Mode**: 8-second invincibility through obstacles (green dino sprite)
 
 ### Visual & Audio
 - **Dynamic Sprites**: Dinosaur appearance changes based on active powerups
