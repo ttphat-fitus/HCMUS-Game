@@ -139,6 +139,11 @@ Game-Python2/
 - Memory management through proper object cleanup
 - 60 FPS target with delta time calculations
 
+### Debugging / Testing Helpers
+
+- Runtime FPS toggle: Press `F` during gameplay to toggle an FPS counter shown in the HUD (top-right). This is useful when profiling performance or validating frame stability.
+- Automated test: `test_fps_toggle.py` verifies the toggle behavior programmatically.
+
 ### Platform Compatibility
 
 - **Windows**: Full support with .bat files for easy setup

@@ -25,16 +25,18 @@ class MainGame:
     def __init__(self, screen_width=1152, screen_height=648):
         pygame.init()
         pygame.mixer.init()
-        
+
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         pygame.display.set_caption("Dino Run")
-        
+
         self.clock = pygame.time.Clock()
         self.running = True
         self.game_running = False
-        
+        # Toggle for showing FPS (press 'F' to toggle during runtime)
+        self.show_fps = False
+
         # Game variables
         self.score = 0
         self.token_score = 0  # Separate score for tokens collected
@@ -43,16 +45,16 @@ class MainGame:
         self.base_speed = self.START_SPEED  # Store original speed for powerup calculations
         self.difficulty = 0
         self.camera_x = 0
-        
+
         # Powerup effects
         self.active_powerups = {}  # Dictionary to track active powerups
         self.coin_multiplier = 1  # Multiplier for coin collection (doublegold effect)
         self.is_invincible = False  # God mode invincibility state
-        
+
         # Initialize game objects
         self.background = Background(screen_width, screen_height)
         self.ground_y = self.background.get_ground_y()
-        
+
         # Create dino and position it properly on the ground (a bit lower)
         self.ground_offset = 40
         self.dino = Dino(self.DINO_START_POS[0], self.ground_y - self.ground_offset)
@@ -61,14 +63,14 @@ class MainGame:
         self.token_manager = TokenManager(screen_width, self.ground_y)
         self.hud = HUD(screen_width, screen_height)
         self.game_over_screen = GameOver(screen_width, screen_height)
-        
+
         # Load sounds
         self.bg_music = None
         self.game_over_sounds = []
         self.coin_sound = None
         self.game_over_played = False  # Flag to prevent repeated game over sound
         self.load_sounds()
-        
+
         # Initialize new game
         self.new_game()
         
@@ -206,6 +208,10 @@ class MainGame:
                         self.hud.hide_start_label()
                     elif self.game_over_screen.visible:
                         self.new_game()
+                elif event.key == pygame.K_f:
+                    # Toggle FPS display for testing
+                    self.show_fps = not getattr(self, 'show_fps', False)
+                    print(f"Show FPS: {self.show_fps}")
                         
     def update(self, delta_time):
         """Update game logic"""
@@ -319,17 +325,18 @@ class MainGame:
     def draw(self):
         """Draw all game elements"""
         self.screen.fill((135, 206, 235))  # Sky blue background
-        
+
         # Draw game objects
         self.background.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
         self.token_manager.draw(self.screen)
         self.dino.draw(self.screen, self.is_invincible)
-        
-        # Draw UI
-        self.hud.draw(self.screen, int(self.score), self.high_score, self.game_running, self.token_score, self.active_powerups)
+
+        # Draw UI (conditionally include FPS if toggle is enabled)
+        fps_to_show = self.clock.get_fps() if self.show_fps else None
+        self.hud.draw(self.screen, int(self.score), self.high_score, self.game_running, self.token_score, self.active_powerups, fps=fps_to_show)
         self.game_over_screen.draw(self.screen, int(self.score), self.high_score)
-        
+
         pygame.display.flip()
         
     def run(self):

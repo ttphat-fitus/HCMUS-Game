@@ -40,7 +40,7 @@ class HUD:
         
         return text_surface.get_width(), text_surface.get_height()
         
-    def draw(self, screen, score, high_score, game_running, token_score=0, active_powerups=None):
+    def draw(self, screen, score, high_score, game_running, token_score=0, active_powerups=None, fps=None):
         """Draw the HUD elements"""
         # Score
         score_text = f"SCORE: {score // 10}"  # Match original SCORE_MODIFIER
@@ -53,6 +53,17 @@ class HUD:
         # Coin Score
         coin_text = f"COINS: {token_score}"
         self.draw_text_with_shadow(screen, coin_text, self.font, 20, 80, (255, 215, 0))  # Gold color
+
+        # FPS display (top-right)
+        if fps is not None:
+            try:
+                fps_text = f"FPS: {int(fps)}"
+            except Exception:
+                fps_text = f"FPS: {fps:.1f}"
+            text_width, text_height = self.font.size(fps_text)
+            x = self.screen_width - text_width - 20
+            y = 20
+            self.draw_text_with_shadow(screen, fps_text, self.font, x, y, (255, 255, 255))
         
         # Active Powerups
         if active_powerups and len(active_powerups) > 0:

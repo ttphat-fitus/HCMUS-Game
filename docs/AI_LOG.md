@@ -398,6 +398,16 @@ The AI_LOG.md file now contains a complete record of our entire conversation and
 - All file changes and modifications
 
 This provides a comprehensive audit trail of the entire game rewrite project.
+
+----------
+RECENT UPDATE: FPS TOGGLE
+- TIMESTAMP: August 23, 2025
+- CONTENT:
+```
+Added a runtime FPS toggle feature for debugging and testing. Press 'F' during gameplay to toggle an FPS counter shown in the HUD (top-right). The HUD will display "FPS: <number>" when enabled. A small test script `test_fps_toggle.py` was added to verify the toggle behavior programmatically.
+```
+- SUMMARY OF CHANGE: Implemented `show_fps` toggle in `MainGame`, added key handler for `F`, updated HUD to accept optional `fps` parameter, and added `test_fps_toggle.py` to the project root.
+
 ```
 - FILES CHANGED: 
   • d:\OOPgame\AI_LOG.md (updated with complete conversation history)

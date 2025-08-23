@@ -134,6 +134,14 @@ venv\Scripts\python test_game.py
 venv/bin/python test_game.py
 ```
 
+### FPS Toggle (Debugging)
+
+For testing and debugging, an FPS counter can be toggled at runtime:
+
+- Press `F` during gameplay to toggle the FPS display on/off.
+- When enabled, the HUD shows "FPS: <number>" at the top-right.
+- A unit test `test_fps_toggle.py` is included in the project root to verify the toggle behavior programmatically.
+
 ## 🎨 **Customization**
 
 The game is built with modularity in mind. You can easily:
