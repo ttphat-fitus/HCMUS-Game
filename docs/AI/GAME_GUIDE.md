@@ -73,6 +73,11 @@ chmod +x setup.sh run_game.sh
 - Duck under flying birds
 - Progressive speed increase
 - Score tracking with high score persistence
+- Token collection system for bonus points
+- Three powerup types:
+  - **HalfSpeed**: Slows game movement for easier navigation (5 seconds)
+  - **DoubleGold**: Doubles token value collection (10 seconds) 
+  - **God Mode**: Grants invincibility through obstacles (8 seconds)
 
 ✅ **Visual & Audio**
 - Parallax scrolling background (5 layers)

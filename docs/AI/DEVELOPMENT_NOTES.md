@@ -111,8 +111,9 @@ Game-Python2/
 - Endless running gameplay & progressive difficulty
 - Obstacle set: stump, rock, barrel, bird
 - Token (coin) spawning & collection tracking (separate `token_score`)
-- Powerups (timed): `halfspeed`, `doublegold`
+- Powerups (timed): `halfspeed`, `doublegold`, `godmode`
    - Movement slowdown decoupled from score progression via `base_speed` vs `speed`
+   - Invincibility allows passage through obstacles without collision
 - Parallax scrolling background (multi-layer)
 - Jump mechanic (duck placeholder pending art)
 - Persistent high score (`high_score.json`)
@@ -122,7 +123,7 @@ Game-Python2/
 
 🔄 **Planned / Potential Enhancements**:
 
-- Additional powerups (invincibility, shield, score multiplier)
+- Additional powerups (shield, score multiplier, jump enhancement)
 - Duck state sprite & hitbox adjustments
 - Particle / dust effects on land & collision
 - Expanded obstacle library + pattern groups

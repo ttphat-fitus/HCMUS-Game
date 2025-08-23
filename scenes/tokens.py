@@ -18,11 +18,15 @@ class Token(GameObject):
         elif token_type == "halfspeed":
             self.value = 0  # No coin value
             self.effect = "halfspeed"
-            self.effect_duration = 5.0  # 5 seconds
+            self.effect_duration = 7.0  # 7 seconds
         elif token_type == "doublegold":
             self.value = 0  # No coin value
             self.effect = "doublegold"
             self.effect_duration = 10.0  # 10 seconds
+        elif token_type == "godmode":
+            self.value = 0  # No coin value
+            self.effect = "godmode"
+            self.effect_duration = 8.0  # 8 seconds
             
         self.speed_multiplier = 3.0  # Match ground speed like obstacles
         self.collected = False
@@ -41,7 +45,8 @@ class Token(GameObject):
         sprite_paths = {
             "coin": get_resource_path("assets/img/rewards/coin.png"),
             "halfspeed": get_resource_path("assets/img/rewards/halfspeed.png"),
-            "doublegold": get_resource_path("assets/img/rewards/doublegold.png")
+            "doublegold": get_resource_path("assets/img/rewards/doublegold.png"),
+            "godmode": get_resource_path("assets/img/rewards/godmode.png")
         }
         
         sprite_path = sprite_paths.get(token_type, sprite_paths["coin"])
@@ -61,8 +66,9 @@ class Token(GameObject):
         # Different colors for different token types
         colors = {
             "coin": (255, 215, 0),      # Gold
-            "halfspeed": (0, 100, 255), # Blue
-            "doublegold": (255, 165, 0) # Orange
+            "halfspeed": (128, 0, 128), # Purple
+            "doublegold": (255, 165, 0), # Orange
+            "godmode": (0, 255, 0)      # Green
         }
         
         color = colors.get(self.token_type, colors["coin"])
@@ -83,6 +89,17 @@ class Token(GameObject):
             # Star-like shape for doublegold
             pygame.draw.rect(self.sprite, color, (size // 4, size // 4, size // 2, size // 2))
             pygame.draw.rect(self.sprite, (255, 255, 255), (size // 4, size // 4, size // 2, size // 2), 2)
+        elif self.token_type == "godmode":
+            # Shield-like shape for godmode (cross/plus pattern)
+            center = size // 2
+            thickness = size // 6
+            # Vertical bar
+            pygame.draw.rect(self.sprite, color, (center - thickness//2, thickness, thickness, size - 2*thickness))
+            # Horizontal bar
+            pygame.draw.rect(self.sprite, color, (thickness, center - thickness//2, size - 2*thickness, thickness))
+            # Border
+            pygame.draw.rect(self.sprite, (200, 200, 200), (center - thickness//2, thickness, thickness, size - 2*thickness), 2)
+            pygame.draw.rect(self.sprite, (200, 200, 200), (thickness, center - thickness//2, size - 2*thickness, thickness), 2)
         
         self.rect = self.sprite.get_rect()
         self.rect.center = (self.position.x, self.position.y)
@@ -151,7 +168,9 @@ class TokenManager:
         # Token spawn probabilities
         self.coin_probability = 1.0  # Coins always spawn when timer triggers
         self.doublegold_probability = 0.7 # chance for doublegold
-        self.halfspeed_min_score = 500  # Minimum score needed for halfspeed powerup
+        self.halfspeed_min_score = 0  # Minimum score needed for halfspeed powerup
+        self.godmode_min_score = 0  # Minimum score needed for godmode powerup
+        self.godmode_probability = 1.0 # chance for godmode (rarer than other powerups)
         
     def update(self, delta_time, speed, score, difficulty, camera_x):
         """Update all tokens and spawn new ones"""
@@ -216,6 +235,10 @@ class TokenManager:
         # Halfspeed only spawns if score is high enough
         if score >= self.halfspeed_min_score:
             available_powerups.append("halfspeed")
+            
+        # Godmode only spawns if score is very high and with low probability
+        if score >= self.godmode_min_score and random.random() < self.godmode_probability:
+            available_powerups.append("godmode")
         
         # Spawn a powerup if any are available
         if available_powerups:

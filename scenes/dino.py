@@ -18,7 +18,9 @@ class Dino(GameObject):
         self.sprite_sheets = {
             "base": get_resource_path("assets/img/dino/mort-base.png"),
             "slow": get_resource_path("assets/img/dino/mort-slow.png"), 
-            "fast": get_resource_path("assets/img/dino/mort-fast.png")
+            # "fast": get_resource_path("assets/img/dino/mort-fast.png"),  # Temporarily commented out
+            "gold": get_resource_path("assets/img/dino/mort-gold.png"),
+            "god": get_resource_path("assets/img/dino/mort-god.png")
         }
         
         # Load sprite sheet (576x24 = 24 frames of 24x24) with original 8x scale
@@ -73,13 +75,28 @@ class Dino(GameObject):
         
     def update(self, delta_time, game_running, ground_y, active_powerups=None, score=0):
         """Update dinosaur physics and animation"""
-        # Check sprite sheet conditions
-        if active_powerups and "halfspeed" in active_powerups:
-            self.change_sprite_sheet("slow")
-        elif score > 4000:
-            self.change_sprite_sheet("fast")
+        # Check sprite sheet conditions based on active powerups
+        if active_powerups:
+            if "godmode" in active_powerups:
+                self.change_sprite_sheet("god")
+            elif "doublegold" in active_powerups:
+                self.change_sprite_sheet("gold")
+            elif "halfspeed" in active_powerups:
+                self.change_sprite_sheet("slow")
+            else:
+                # No active powerups, check score for fast mode
+                # if score > 4000:
+                #     self.change_sprite_sheet("fast")  # Temporarily commented out
+                # else:
+                #     self.change_sprite_sheet("base")
+                self.change_sprite_sheet("base")  # Always use base when no powerups
         else:
-            self.change_sprite_sheet("base")
+            # No powerups dictionary, check score for fast mode
+            # if score > 4000:
+            #     self.change_sprite_sheet("fast")  # Temporarily commented out
+            # else:
+            #     self.change_sprite_sheet("base")
+            self.change_sprite_sheet("base")  # Always use base when no powerups
             
         # Apply gravity
         self.velocity.y += self.GRAVITY * delta_time
@@ -156,12 +173,25 @@ class Dino(GameObject):
             return rect
         return self.rect
         
-    def draw(self, screen):
+    def draw(self, screen, is_invincible=False):
         """Draw the dinosaur with proper animation"""
         if self.visible and self.sprite:
             # Update rect position to match current position
             self.rect.center = (self.position.x, self.position.y)
-            screen.blit(self.sprite, self.rect)
+            
+            # Apply visual effect if invincible (flashing/transparent)
+            if is_invincible:
+                # Create a semi-transparent version for invincibility effect
+                import time
+                flash_rate = 4  # flashes per second
+                alpha = 128 if int(time.time() * flash_rate) % 2 else 255
+                
+                # Create a copy of the sprite with alpha
+                temp_sprite = self.sprite.copy()
+                temp_sprite.set_alpha(alpha)
+                screen.blit(temp_sprite, self.rect)
+            else:
+                screen.blit(self.sprite, self.rect)
             
             # Debug: Draw collision rectangles (remove in final version)
             # collision_rect = self.get_collision_rect()

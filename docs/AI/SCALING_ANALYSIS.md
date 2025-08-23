@@ -165,6 +165,10 @@ Dino: 2.5x scale     # Player character prominence
 - Proper sprite sheet utilization
 - Modern scaling for high-resolution displays
 - Debug visualization tools
+- Powerup system with visual effects:
+  - Token collection with color-coded powerup types
+  - God Mode invincibility with player flashing effect
+  - HUD powerup status indicators
 
 ## 🚀 **Result**
 

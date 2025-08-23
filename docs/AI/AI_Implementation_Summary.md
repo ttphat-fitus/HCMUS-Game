@@ -4,9 +4,10 @@ This document summarizes automated assistance provided so far in the Python rewr
 
 ## Key Additions
 
-- Introduced powerup framework and implemented two concrete effects:
+- Introduced powerup framework and implemented three concrete effects:
 	- `halfspeed`: slows gameplay movement to 70% without reducing score gain
 	- `doublegold`: doubles coin (token) value during active duration
+	- `godmode`: grants 8-second invincibility allowing passage through obstacles
 - Separated `base_speed` (scoring & difficulty) from `speed` (world motion) for fair slowdown handling.
 - Extended HUD to render active powerups with remaining seconds.
 - Token manager returns `(coin_value, powerup_effects)` enabling simultaneous coin collection and powerup activation.
@@ -19,7 +20,7 @@ This document summarizes automated assistance provided so far in the Python rewr
 
 ## Pending / Backlog
 
-- Additional powerup types (invincibility, shield, score multiplier).
+- Additional powerup types (shield, score multiplier, jump enhancement).
 - Potential refactor: strategy objects per powerup effect if count grows.
 - Performance profiling & possible sprite batching once animation set expands.
 

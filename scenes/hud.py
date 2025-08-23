@@ -60,10 +60,13 @@ class HUD:
             for powerup_name, remaining_time in active_powerups.items():
                 if powerup_name == "halfspeed":
                     powerup_text = f"SLOW POWERUP: {remaining_time:.1f}s"
-                    color = (0, 150, 255)  # Blue
+                    color = (128, 0, 128)  # Purple
                 elif powerup_name == "doublegold":
                     powerup_text = f"DOUBLE GOLD: {remaining_time:.1f}s"
                     color = (255, 165, 0)  # Orange
+                elif powerup_name == "godmode":
+                    powerup_text = f"GOD MODE: {remaining_time:.1f}s"
+                    color = (0, 255, 0)  # Green
                 else:
                     powerup_text = f"{powerup_name.upper()}: {remaining_time:.1f}s"
                     color = (255, 255, 255)  # White

@@ -47,6 +47,7 @@ class MainGame:
         # Powerup effects
         self.active_powerups = {}  # Dictionary to track active powerups
         self.coin_multiplier = 1  # Multiplier for coin collection (doublegold effect)
+        self.is_invincible = False  # God mode invincibility state
         
         # Initialize game objects
         self.background = Background(screen_width, screen_height)
@@ -64,6 +65,8 @@ class MainGame:
         # Load sounds
         self.bg_music = None
         self.game_over_sounds = []
+        self.coin_sound = None
+        self.game_over_played = False  # Flag to prevent repeated game over sound
         self.load_sounds()
         
         # Initialize new game
@@ -95,6 +98,14 @@ class MainGame:
         try:
             # Load background music
             self.bg_music = get_resource_path("assets/sound/background.wav")
+            
+            # Load coin collection sound
+            try:
+                self.coin_sound = pygame.mixer.Sound(get_resource_path("assets/sound/coin.wav"))
+                self.coin_sound.set_volume(0.3)
+                print("Coin sound loaded successfully")
+            except pygame.error as e:
+                print(f"Warning: Could not load coin sound: {e}")
             
             # Load game over sounds
             game_over_files = [
@@ -128,16 +139,17 @@ class MainGame:
         pygame.mixer.music.stop()
     
     def play_game_over_sound(self):
-        """Play a random game over sound in loop"""
+        """Play a random game over sound once"""
         try:
-            if self.game_over_sounds:
+            if self.game_over_sounds and not self.game_over_played:
                 # Stop any currently playing game over sound
                 pygame.mixer.stop()
                 # Choose a random game over sound
                 sound = random.choice(self.game_over_sounds)
                 sound.set_volume(0.5)  # Set volume to 50%
-                sound.play(-1)  # -1 means loop indefinitely
-                print("Game over sound started")
+                sound.play()  # Play once only
+                self.game_over_played = True
+                print("Game over sound played")
         except Exception as e:
             print(f"Error playing game over sound: {e}")
     
@@ -159,6 +171,10 @@ class MainGame:
         # Reset powerups
         self.active_powerups.clear()
         self.coin_multiplier = 1
+        self.is_invincible = False
+        
+        # Reset game over sound flag
+        self.game_over_played = False
         
         # Reset game objects
         self.dino.position.x = self.DINO_START_POS[0]
@@ -232,15 +248,16 @@ class MainGame:
                 self.token_score += actual_coins
                 if self.coin_multiplier > 1:
                     print(f"Doublegold active! Collected {coin_value} coin(s) -> {actual_coins} coins!")
-                # Play collection sound here if you have one
-                # pygame.mixer.Sound("assets/sound/collect.wav").play()
+                # Play coin collection sound
+                if self.coin_sound:
+                    self.coin_sound.play()
             
             # Handle powerup effects
             for powerup in powerup_effects:
                 self.activate_powerup(powerup["effect"], powerup["duration"], powerup["type"])
             
-            # Check obstacle collisions (game over)
-            if self.obstacle_manager.check_collision(self.dino):
+            # Check obstacle collisions (game over) - only if not invincible
+            if not self.is_invincible and self.obstacle_manager.check_collision(self.dino):
                 self.game_over()
         else:
             # Update dino in idle state
@@ -281,6 +298,9 @@ class MainGame:
                 print("Doublegold powerup expired!")
             elif powerup_name == "halfspeed":
                 print("Halfspeed powerup expired!")
+            elif powerup_name == "godmode":
+                self.is_invincible = False
+                print("God mode powerup expired!")
     
     def activate_powerup(self, effect, duration, powerup_type):
         """Activate a powerup effect"""
@@ -291,6 +311,10 @@ class MainGame:
             self.active_powerups["doublegold"] = duration
             self.coin_multiplier = 2
             print(f"Doublegold activated for {duration} seconds!")
+        elif effect == "godmode":
+            self.active_powerups["godmode"] = duration
+            self.is_invincible = True
+            print(f"God mode activated for {duration} seconds! (Invincible to obstacles)")
             
     def draw(self):
         """Draw all game elements"""
@@ -300,7 +324,7 @@ class MainGame:
         self.background.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
         self.token_manager.draw(self.screen)
-        self.dino.draw(self.screen)
+        self.dino.draw(self.screen, self.is_invincible)
         
         # Draw UI
         self.hud.draw(self.screen, int(self.score), self.high_score, self.game_running, self.token_score, self.active_powerups)
