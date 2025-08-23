@@ -90,6 +90,12 @@ pip install pygame
 - Check that `assets/` folder contains all files
 - Audio is optional - game works without sound
 
+**Tokens (coins) spawning inside obstacles**
+    - Symptom: Occasionally coins or powerups could spawn overlapping an obstacle, making them uncollectable and creating unfair gameplay situations.
+    - Fix applied: Token spawning now checks proposed spawn positions against active obstacles and uses a safety buffer to avoid overlaps. The system makes multiple placement attempts and falls back to a safe default if no clear spot is found after several tries.
+    - Adjustable parameters: `min_distance_from_obstacles` (horizontal buffer, default 150 px) and `vertical_safe_zone` (vertical buffer, default 80 px) in `scenes/tokens.py`.
+    - If you still observe problematic spawns, try reducing `min_distance_from_obstacles` or increasing `vertical_safe_zone` slightly and retest.
+
 ## 📁 Project Structure
 
 ```

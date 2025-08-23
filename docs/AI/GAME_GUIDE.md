@@ -142,6 +142,13 @@ For testing and debugging, an FPS counter can be toggled at runtime:
 - When enabled, the HUD shows "FPS: <number>" at the top-right.
 - A unit test `test_fps_toggle.py` is included in the project root to verify the toggle behavior programmatically.
 
+### Known Issues & Fixes
+
+ - Coin/Token Spawn Overlapping Obstacles
+  - Description: Some coins/powerups could spawn inside obstacle bounding boxes, making them uncollectable.
+  - Fix: Token spawning now avoids obstacle rects using a safety buffer. See `scenes/tokens.py` for parameters `min_distance_from_obstacles` (150 px) and `vertical_safe_zone` (80 px).
+  - Tuning: If you notice tokens are too sparse or still colliding, tweak the two parameters and re-run the game. Lower the horizontal buffer to increase density; increase the vertical buffer to be more conservative.
+
 ## 🎨 **Customization**
 
 The game is built with modularity in mind. You can easily:

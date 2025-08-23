@@ -172,14 +172,18 @@ class TokenManager:
         self.godmode_min_score = 0  # Minimum score needed for godmode powerup
         self.godmode_probability = 1.0 # chance for godmode (rarer than other powerups)
         
-    def update(self, delta_time, speed, score, difficulty, camera_x):
+        # Safe spawning parameters
+        self.min_distance_from_obstacles = 150  # Minimum horizontal distance from obstacles
+        self.vertical_safe_zone = 80  # Vertical buffer zone around obstacles
+        
+    def update(self, delta_time, speed, score, difficulty, camera_x, obstacle_manager=None):
         """Update all tokens and spawn new ones"""
         # Update spawn timer for regular coins
         self.spawn_timer += delta_time
         
         # Spawn new coin if it's time
         if self.spawn_timer >= self.next_spawn_time:
-            self.spawn_coin(camera_x)
+            self.spawn_coin(camera_x, obstacle_manager)
             self.spawn_timer = 0.0
             
             # Adjust spawn rate based on difficulty
@@ -197,7 +201,7 @@ class TokenManager:
         
         # Spawn powerups if it's time
         if self.powerup_spawn_timer >= self.next_powerup_time:
-            self.spawn_powerup(camera_x, score)
+            self.spawn_powerup(camera_x, score, obstacle_manager)
             self.powerup_spawn_timer = 0.0
             self.next_powerup_time = random.uniform(self.min_powerup_interval, self.max_powerup_interval)
         
@@ -209,23 +213,60 @@ class TokenManager:
             if token.is_off_screen(camera_x, self.screen_width):
                 self.tokens.remove(token)
                 
-    def spawn_coin(self, camera_x):
-        """Spawn a new coin"""
-        # Position token ahead of camera
-        x = camera_x + self.screen_width + random.randint(100, 300)
-        y = random.choice(self.token_heights)
+    def is_safe_spawn_position(self, x, y, obstacle_manager):
+        """Check if a position is safe to spawn a token (not overlapping with obstacles)"""
+        if not obstacle_manager:
+            return True
+            
+        # Create a temporary rect for the proposed token position
+        token_rect = pygame.Rect(x - 20, y - 20, 40, 40)  # Token size approximation
         
-        # Create coin
+        # Check against all existing obstacles
+        for obstacle in obstacle_manager.obstacles:
+            if obstacle.rect:
+                # Expand obstacle rect with safety buffer
+                safe_rect = obstacle.rect.inflate(
+                    self.min_distance_from_obstacles * 2, 
+                    self.vertical_safe_zone * 2
+                )
+                
+                # Check if token would overlap with the safe zone
+                if token_rect.colliderect(safe_rect):
+                    return False
+                    
+        return True
+                
+    def spawn_coin(self, camera_x, obstacle_manager=None):
+        """Spawn a new coin in a safe location"""
+        max_attempts = 10  # Prevent infinite loops
+        attempts = 0
+        
+        while attempts < max_attempts:
+            # Position token ahead of camera
+            x = camera_x + self.screen_width + random.randint(100, 300)
+            y = random.choice(self.token_heights)
+            
+            # Check if position is safe
+            if obstacle_manager is None or self.is_safe_spawn_position(x, y, obstacle_manager):
+                # Create coin
+                token = Token(x, y, "coin")
+                self.tokens.append(token)
+                return
+                
+            attempts += 1
+        
+        # If we couldn't find a safe position, spawn anyway but further ahead
+        x = camera_x + self.screen_width + random.randint(400, 600)
+        y = random.choice(self.token_heights)
         token = Token(x, y, "coin")
         self.tokens.append(token)
         
-    def spawn_powerup(self, camera_x, score):
-        """Spawn a powerup based on conditions"""
-        # Position powerup ahead of camera
-        x = camera_x + self.screen_width + random.randint(200, 500)
-        y = random.choice(self.token_heights)
+    def spawn_powerup(self, camera_x, score, obstacle_manager=None):
+        """Spawn a powerup in a safe location based on conditions"""
+        max_attempts = 10  # Prevent infinite loops
+        attempts = 0
         
-        # Determine which powerup to spawn
+        # Determine which powerup to spawn first
         available_powerups = []
         
         # Doublegold can always spawn (but with probability)
@@ -240,12 +281,32 @@ class TokenManager:
         if score >= self.godmode_min_score and random.random() < self.godmode_probability:
             available_powerups.append("godmode")
         
-        # Spawn a powerup if any are available
-        if available_powerups:
-            powerup_type = random.choice(available_powerups)
-            powerup = Token(x, y, powerup_type)
-            self.tokens.append(powerup)
-            print(f"Spawned {powerup_type} powerup at score {int(score)}")
+        # Return early if no powerups are available
+        if not available_powerups:
+            return
+            
+        powerup_type = random.choice(available_powerups)
+        
+        while attempts < max_attempts:
+            # Position powerup ahead of camera
+            x = camera_x + self.screen_width + random.randint(200, 500)
+            y = random.choice(self.token_heights)
+            
+            # Check if position is safe
+            if obstacle_manager is None or self.is_safe_spawn_position(x, y, obstacle_manager):
+                powerup = Token(x, y, powerup_type)
+                self.tokens.append(powerup)
+                print(f"Spawned {powerup_type} powerup at score {int(score)} at safe position")
+                return
+                
+            attempts += 1
+        
+        # If we couldn't find a safe position, spawn anyway but much further ahead
+        x = camera_x + self.screen_width + random.randint(600, 800)
+        y = random.choice(self.token_heights)
+        powerup = Token(x, y, powerup_type)
+        self.tokens.append(powerup)
+        print(f"Spawned {powerup_type} powerup at score {int(score)} at fallback position")
         
     def choose_token_type(self):
         """Choose a token type based on rarity weights"""

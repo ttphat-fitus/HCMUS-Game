@@ -144,6 +144,19 @@ Game-Python2/
 - Runtime FPS toggle: Press `F` during gameplay to toggle an FPS counter shown in the HUD (top-right). This is useful when profiling performance or validating frame stability.
 - Automated test: `test_fps_toggle.py` verifies the toggle behavior programmatically.
 
+### Error Report & Fix — Coin / Token Spawning Overlapping Obstacles
+
+- Symptom: During playtesting, coins and some powerups sometimes spawned directly inside obstacles (stump/rock/barrel/bird), making them uncollectable.
+- Root cause: Token spawn logic did not check active obstacle positions before placing a token. Random placement occasionally overlapped obstacle bounding rectangles.
+- Fix summary: Implemented collision-aware spawning in `TokenManager`:
+   - `is_safe_spawn_position()` checks proposed token rects against inflated obstacle rects (safety buffer).
+   - Spawn methods retry placement (default 10 attempts) before falling back to a safe position.
+   - Parameters to tune: `min_distance_from_obstacles` (default 150 px), `vertical_safe_zone` (default 80 px).
+
+   Notes on validation:
+      - Run the game and observe token placement in crowded obstacle areas. Adjust the two parameters above in `scenes/tokens.py` if tokens are still too close or too sparse.
+      - If spawning frequency drops noticeably, consider decreasing `min_distance_from_obstacles` or adding lane-based spawn logic to guarantee valid lanes.
+
 ### Platform Compatibility
 
 - **Windows**: Full support with .bat files for easy setup

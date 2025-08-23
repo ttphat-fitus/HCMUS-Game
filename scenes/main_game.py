@@ -244,7 +244,7 @@ class MainGame:
             self.dino.update(delta_time, self.game_running, self.ground_y + self.ground_offset, self.active_powerups, self.score)
             self.background.update(delta_time, self.speed)
             self.obstacle_manager.update(delta_time, self.speed, self.score, self.difficulty, self.camera_x)
-            self.token_manager.update(delta_time, self.speed, self.score, self.difficulty, self.camera_x)
+            self.token_manager.update(delta_time, self.speed, self.score, self.difficulty, self.camera_x, self.obstacle_manager)
             
             # Check token collisions (collect tokens and powerups)
             coin_value, powerup_effects = self.token_manager.check_collision(self.dino)
