@@ -44,6 +44,7 @@ python3 -m venv venv && source venv/bin/activate && pip install pygame && python
 | **SPACE** / **UP** | Jump / Start Game |
 | **DOWN** | Duck (while running) |
 | **ESC** | Quit Game |
+| **F** | Toggle FPS display (for testing/debug) |
 
 | **F** | Toggle FPS display (for testing/debug) |
 
