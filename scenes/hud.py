@@ -65,7 +65,7 @@ class HUD:
                     powerup_text = f"DOUBLE GOLD: {remaining_time:.1f}s"
                     color = (255, 165, 0)  # Orange
                 elif powerup_name == "godmode":
-                    powerup_text = f"GOD MODE: {remaining_time:.1f}s"
+                    powerup_text = f"UNSTOPPABLE: {remaining_time:.1f}s"
                     color = (0, 255, 0)  # Green
                 else:
                     powerup_text = f"{powerup_name.upper()}: {remaining_time:.1f}s"

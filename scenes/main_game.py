@@ -128,7 +128,7 @@ class MainGame:
         try:
             if self.bg_music:
                 pygame.mixer.music.load(self.bg_music)
-                pygame.mixer.music.set_volume(0.05)  # Set volume
+                pygame.mixer.music.set_volume(0.1)  # Set volume
                 pygame.mixer.music.play(-1)  # -1 means loop indefinitely
                 print("Background music started")
         except pygame.error as e:
