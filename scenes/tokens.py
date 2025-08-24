@@ -18,7 +18,7 @@ class Token(GameObject):
         elif token_type == "halfspeed":
             self.value = 0  # No coin value
             self.effect = "halfspeed"
-            self.effect_duration = 7.0  # 7 seconds
+            self.effect_duration = 10.0  # 10 seconds
         elif token_type == "doublegold":
             self.value = 0  # No coin value
             self.effect = "doublegold"
@@ -167,10 +167,10 @@ class TokenManager:
         
         # Token spawn probabilities
         self.coin_probability = 1.0  # Coins always spawn when timer triggers
-        self.doublegold_probability = 0.7 # chance for doublegold
-        self.halfspeed_min_score = 0  # Minimum score needed for halfspeed powerup
-        self.godmode_min_score = 0  # Minimum score needed for godmode powerup
-        self.godmode_probability = 1.0 # chance for godmode (rarer than other powerups)
+        self.doublegold_probability = 0.5 # chance for doublegold
+        self.halfspeed_min_score = 400  # Minimum score needed for halfspeed powerup
+        self.godmode_min_score = 1000  # Minimum score needed for godmode powerup
+        self.godmode_probability = 0.3 # chance for godmode 
         
         # Safe spawning parameters
         self.min_distance_from_obstacles = 150  # Minimum horizontal distance from obstacles
