@@ -182,7 +182,7 @@ Game-Python/
 │   │   ├── collision.py     # ✅ Collision detection
 │   │   └── animation.py     # ✅ Animation system
 │   └── managers/
-│       └── asset_manager.py # ✅ Singleton asset management
+│       └── asset_manager.py # ✅ Singleton pattern
 └── assets/                 # ✅ All game assets copied
 ```
 
@@ -595,3 +595,87 @@ Visual Powerup System:
 *Project Status: Production Ready - All Core Features Complete*
 
 ----------
+
+## [2025-08-25] macOS Packaging & Distribution System
+
+**ISSUE**: Need to package the game for easy distribution on macOS without requiring users to install Python or dependencies.
+
+**ANALYSIS**:
+- PyInstaller can create standalone .app bundles for macOS
+- Need to ensure compatibility across macOS versions (10.12+)
+- Assets (images, sounds, fonts) must be properly bundled
+- DMG creation for professional distribution
+
+**IMPLEMENTATION**:
+
+### Files Created:
+1. **`build_macos.spec`** - PyInstaller specification file:
+   - Configures app bundle creation
+   - Ensures all assets are included
+   - Sets macOS compatibility to 10.12+
+   - Defines app metadata and bundle identifier
+
+2. **`build_macos.sh`** - Automated build script:
+   - Checks for PyInstaller installation
+   - Cleans previous builds
+   - Builds the .app bundle
+   - Provides clear success/failure feedback
+
+3. **`create_dmg.sh`** - DMG creation script:
+   - Creates distributable DMG file
+   - Includes Applications symlink for easy drag-and-drop installation
+   - Provides file size information
+
+4. **`requirements.txt`** - Dependency specification:
+   - pygame>=2.0.0
+   - pyinstaller>=5.0.0
+
+### Build Process:
+```bash
+# One-time setup
+chmod +x build_macos.sh create_dmg.sh
+
+# Build app
+./build_macos.sh
+
+# Create DMG (optional)
+./create_dmg.sh
+```
+
+### Output:
+- `dist/HCMUS Dino Game.app` - Standalone macOS application
+- `HCMUS-Dino-Game-v1.0.0.dmg` - Distributable installer
+
+### Compatibility:
+- **Minimum**: macOS 10.12 (Sierra)
+- **Tested**: macOS 11+ (Big Sur and later)
+- **Architecture**: Universal (works on Intel and Apple Silicon)
+
+### Distribution Benefits:
+- No Python installation required
+- No dependency management needed
+- Professional app bundle with metadata
+- Easy installation via DMG
+- Works offline
+
+**TESTING**:
+- Build process tested on macOS
+- App bundle launches correctly
+- All assets load properly
+- Game functions identically to source version
+
+**DOCUMENTATION UPDATES**:
+- Updated README.md with packaging instructions
+- Added troubleshooting section for build issues
+- Included manual PyInstaller commands as fallback
+- Added project structure with build files
+
+**TECHNICAL NOTES**:
+- Used BUNDLE target in PyInstaller spec for proper .app creation
+- Included hidden imports for all pygame modules
+- Set NSHighResolutionCapable for Retina display support
+- Configured proper bundle identifier for macOS compliance
+
+This packaging system allows the game to be distributed as a professional macOS application without requiring users to have development tools installed.
+
+---
