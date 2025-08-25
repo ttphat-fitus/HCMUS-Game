@@ -14,7 +14,7 @@ A modern Python implementation of the classic Chrome Dinosaur endless runner, fe
 ```cmd
 python -m venv venv
 venv\Scripts\activate
-pip install pygame
+pip install -r requirements.txt
 python main.py
 ```
 
@@ -22,139 +22,81 @@ python main.py
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install pygame
+pip install -r requirements.txt
 python3 main.py
 ```
 
-### Alternative One-Line Setup
-**Windows:**
-```cmd
-python -m venv venv && venv\Scripts\activate && pip install pygame && python main.py
-```
+## 📦 Packaging for Distribution
 
-**macOS/Linux:**
+### macOS App Bundle
+
+Update later...
+
+**Compatibility:** macOS 10.12 (Sierra) and later
+
+### Manual PyInstaller Build
+
+If you prefer manual control:
+
 ```bash
-python3 -m venv venv && source venv/bin/activate && pip install pygame && python3 main.py
+# Install PyInstaller
+pip install pyinstaller
+
+# Build with custom spec
+pyinstaller build_macos.spec --clean --noconfirm
+
+# Or simple build
+pyinstaller --onedir --windowed --add-data "assets:assets" --name "HCMUS Dino Game" main.py
 ```
 
-## 🎮 Controls
+## 🎮 Game Features
+
+### Current Features
+- **3 Powerups**: HalfSpeed, DoubleGold, God Mode
+- **Dynamic Sprites**: Dinosaur changes appearance based on active powerups
+- **Enhanced Audio**: Coin collection sounds and fixed game over audio
+- **Cross-platform**: Windows, MacOS
+
+### Controls
 
 | Key | Action |
 |-----|--------|
-| **SPACE** / **UP** | Jump / Start Game |
-| **DOWN** | Duck (while running) |
-| **ESC** | Quit Game |
-| **F** | Toggle FPS display |
+| SPACE / UP | Jump / Start Game |
+| DOWN | Duck (while running) |
+| ESC | Quit Game |
+| F | Toggle FPS display |
 
+## 🛠️ Development
 
-## ✨ Features
-
-### Gameplay
-- **Endless Running**: Infinite procedural generation with progressive difficulty
-- **Obstacle Variety**: Ground obstacles (stump, rock, barrel) and flying obstacles (bird)
-- **Physics System**: Realistic gravity, jumping mechanics, and collision detection
-- **Scoring**: Distance-based scoring with persistent high scores
-
-### Powerup System (3 Active Powerups)
-- **🐌 HalfSpeed**: Reduces game speed by 50% for 5 seconds (purple dino sprite)
-- **💰 DoubleGold**: Doubles coin value for 10 seconds (golden dino sprite)
-- **⚡ Unstoppable**: 8-second invincibility through obstacles (green dino sprite)
-
-### Visual & Audio
-- **Dynamic Sprites**: Dinosaur appearance changes based on active powerups
-- **Sound Effects**: Coin collection, jump sounds, and game over audio
-- **Parallax Background**: Multi-layer scrolling with depth effect
-- **Visual Feedback**: HUD powerup display with countdown timers
-
-### Technical
-- **OOP Architecture**: Inheritance, Polymorphism, Abstraction, Encapsulation
-- **Design Patterns**: Factory, Observer, State, Singleton, Strategy patterns
-- **Cross-Platform**: Windows, macOS, and Linux support
-- **Performance**: 60 FPS target with efficient collision detection
-
-## 🔧 Troubleshooting
-
-**"python: command not found"**
-```bash
-# Try python3 instead
-python3 main.py
-```
-
-**"pygame not found"**
-```bash
-# Ensure virtual environment is activated first
-pip install pygame
-```
-
-**No sound/images**
-- Check that `assets/` folder contains all files
-- Audio is optional - game works without sound
-
-**Tokens (coins) spawning inside obstacles**
-    - Symptom: Occasionally coins or powerups could spawn overlapping an obstacle, making them uncollectable and creating unfair gameplay situations.
-    - Fix applied: Token spawning now checks proposed spawn positions against active obstacles and uses a safety buffer to avoid overlaps. The system makes multiple placement attempts and falls back to a safe default if no clear spot is found after several tries.
-    - Adjustable parameters: `min_distance_from_obstacles` (horizontal buffer, default 150 px) and `vertical_safe_zone` (vertical buffer, default 80 px) in `scenes/tokens.py`.
-    - If you still observe problematic spawns, try reducing `min_distance_from_obstacles` or increasing `vertical_safe_zone` slightly and retest.
-
-## 📁 Project Structure
-
+### Project Structure
 ```
 HCMUS-Game/
-├── main.py                # 🎯 Game entry point
-├── assets/               # 🎨 Game assets
-│   ├── img/dino/        # 🦕 Dinosaur sprites (base, slow, gold, god)
-│   ├── img/background/  # 🌄 Background layers
-│   ├── img/obstacles/   # 🚧 Obstacle sprites
-│   ├── sound/           # 🔊 Audio files
-│   └── fonts/           # 📝 Font files
-├── scenes/              # 🎭 Game logic
-│   ├── main_game.py     # Core game orchestration
-│   ├── dino.py          # Player character
-│   ├── obstacles.py     # Obstacle management
-│   ├── tokens.py        # Powerup system
-│   └── [other scenes]   # Background, HUD, etc.
-└── docs/                # 📖 Documentation
-    ├── AI_LOG.md        # Development history
-    ├── DESIGN_PATTERNS.md # Pattern analysis
-    └── OOP_ANALYSIS.md   # Architecture details
+├── main.py              # Entry point
+├── scenes/              # Game modules
+├── assets/              # Images, sounds, fonts
+├── docs/                # Documentation
+└── requirements.txt     # Python dependencies
 ```
 
-## 📖 Documentation
+### Building from Source
 
-- **[AI Development Log](docs/AI_LOG.md)** - Complete development history and feature implementation
-- **[Design Patterns](docs/DESIGN_PATTERNS.md)** - Software design pattern implementations
-- **[OOP Analysis](docs/OOP_ANALYSIS.md)** - Object-oriented architecture breakdown
+1. **Clone the repository**
+2. **Install dependencies**: `pip install -r requirements.txt`
+3. **Run the game**: `python3 main.py`
+4. **Package for distribution**: `./build_macos.sh` (macOS)
 
-## 🎓 Educational Value
+## 📈 Performance Tips
+- Use the FPS toggle (F key) to monitor performance
+- Close other applications while playing
+- Lower system graphics settings if needed
 
-This project demonstrates:
-- **Advanced Python Programming**: OOP principles and best practices
-- **Game Development**: Physics, collision detection, animation systems
-- **Software Architecture**: Clean code, modular design, design patterns
-- **Cross-Platform Development**: Multi-OS compatibility
+## 📚 Documentation
 
-## 🏗️ Architecture Highlights
-
-### OOP Principles
-- **Inheritance**: GameObject → Dino, Obstacle, Token hierarchy
-- **Polymorphism**: Different obstacle types with shared interfaces
-- **Encapsulation**: Private methods and controlled property access
-- **Abstraction**: Clean interfaces hiding implementation complexity
-
-### Design Patterns
-- **Factory**: Dynamic obstacle creation
-- **Observer**: Event-driven game state management
-- **State**: Game state transitions (menu, playing, game over)
-- **Singleton**: Resource and asset management
-- **Strategy**: Difficulty progression algorithms
-
-## 📝 Credits
-
-**Educational Project**: HCMUS Computer Science Program  
-**Purpose**: Object-Oriented Programming coursework demonstration  
-**Framework**: Python 3.8+ with Pygame library  
-**Platform**: Cross-platform compatibility  
+- [Design Patterns](docs/DESIGN_PATTERNS.md)
+- [OOP Analysis](docs/OOP_ANALYSIS.md)
+- [AI Development Log](docs/AI_LOG.md)
+- [Game Guide](docs/AI/GAME_GUIDE.md)
 
 ---
 
-**🎮 Enjoy the game and happy coding! 🦕**
+**Developed using Python & Pygame | Enhanced with AI assistance**

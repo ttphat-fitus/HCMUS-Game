@@ -163,3 +163,36 @@ Game-Python2/
 - **macOS/Linux**: Full support with shell scripts
 - **Python 3.6+**: Required for modern Python features
 - **Pygame 2.0+**: Latest version for best performance
+
+## Distribution & Packaging
+
+### macOS Application Bundle
+- **Build System**: PyInstaller with custom spec file
+- **Compatibility**: macOS 10.12 (Sierra) and later
+- **Output**: Standalone .app bundle + optional DMG
+- **Build Process**: Automated via `build_macos.sh` script
+
+### Packaging Features:
+- All assets automatically bundled
+- No Python installation required for end users
+- Professional app metadata and bundle identifier
+- Retina display optimization
+- Universal architecture support (Intel + Apple Silicon)
+
+### Build Commands:
+```bash
+# Quick build
+./build_macos.sh
+
+# Create distribution DMG
+./create_dmg.sh
+
+# Manual PyInstaller
+pyinstaller build_macos.spec --clean --noconfirm
+```
+
+### Distribution Files:
+- `build_macos.spec` - PyInstaller configuration
+- `build_macos.sh` - Automated build script
+- `create_dmg.sh` - DMG creation script
+- `requirements.txt` - Python dependencies
