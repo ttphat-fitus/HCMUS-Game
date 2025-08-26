@@ -21,3 +21,4 @@ scenes/__pycache__/
 *.jsonSlide.md
 build
 dist
+.vscode
