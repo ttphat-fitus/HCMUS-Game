@@ -32,33 +32,11 @@ python3 main.py
 
 We've added pre-built executables for easy installation without needing Python:
 
-- **🍎 macOS**: `Dino Run (MacOS).zip` - Compatible with macOS 10.12 (Sierra) and later
-- **🪟 Windows**: `Dino Run (Window).zip` - Compatible with Windows 7 and later
+- **🍎 macOS**: `Dino Run (MacOS).zip` - Compatible with macOS 26 (Tahoe) and later
+- **🪟 Windows**: `Dino Run (Window).zip` - Compatible with Windows 10 and later
 
 **Download from the [Releases](./Releases/) folder** - Just download, extract, and play! No Python installation required.
 
-## 📦 Packaging for Distribution
-
-### macOS App Bundle
-
-Update later...
-
-**Compatibility:** macOS 10.12 (Sierra) and later
-
-### Manual PyInstaller Build
-
-If you prefer manual control:
-
-```bash
-# Install PyInstaller
-pip install pyinstaller
-
-# Build with custom spec
-pyinstaller build_macos.spec --clean --noconfirm
-
-# Or simple build
-pyinstaller --onedir --windowed --add-data "assets:assets" --name "HCMUS Dino Game" main.py
-```
 
 ## 🎮 Game Features
 
