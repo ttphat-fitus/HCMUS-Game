@@ -26,6 +26,17 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
+## 🎯 Pre-built Releases
+
+**🎉 New! Ready-to-play releases are now available!**
+
+We've added pre-built executables for easy installation without needing Python:
+
+- **🍎 macOS**: `Dino Run (MacOS).zip` - Compatible with macOS 10.12 (Sierra) and later
+- **🪟 Windows**: `Dino Run (Window).zip` - Compatible with Windows 7 and later
+
+**Download from the [Releases](./Releases/) folder** - Just download, extract, and play! No Python installation required.
+
 ## 📦 Packaging for Distribution
 
 ### macOS App Bundle
