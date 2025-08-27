@@ -28,7 +28,7 @@ python3 main.py
 
 ## 🎯 Pre-built Releases
 
-**🎉 New! Ready-to-play releases are now available!**
+**🎉 Ready-to-play releases are now available!**
 
 We've added pre-built executables for easy installation without needing Python:
 
@@ -43,7 +43,6 @@ We've added pre-built executables for easy installation without needing Python:
 ### Current Features
 - **3 Powerups**: HalfSpeed, DoubleGold, God Mode
 - **Dynamic Sprites**: Dinosaur changes appearance based on active powerups
-- **Enhanced Audio**: Coin collection sounds and fixed game over audio
 - **Cross-platform**: Windows, MacOS
 
 ### Controls
@@ -72,7 +71,6 @@ HCMUS-Game/
 1. **Clone the repository**
 2. **Install dependencies**: `pip install -r requirements.txt`
 3. **Run the game**: `python3 main.py`
-4. **Package for distribution**: `./build_macos.sh` (macOS)
 
 ## 📈 Performance Tips
 - Use the FPS toggle (F key) to monitor performance
